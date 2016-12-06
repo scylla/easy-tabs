@@ -25,6 +25,7 @@ function getCurrentTabUrl(callback) {
     var tab = tabs[0];
     tabs.forEach(function(tab){
       console.log(tab.url);
+      //$("#url-list").append('<li id="' + tab.id + '"><a href="' + tab.url + '"><span id="img' + tab.id + '">' + tab.title + '</span></a></li>');
     });
     // A tab is a plain object that provides information about the tab.
     // See https://developer.chrome.com/extensions/tabs#type-Tab
@@ -95,9 +96,9 @@ function renderStatus(statusText) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-  getCurrentTabUrl(function(url) {
+  //getCurrentTabUrl(function(url) {
     // Put the image URL in Google search.
-    renderStatus('Performing Google Image search for ' + url);
+    // renderStatus('Performing Google Image search for ' + url);
 
     // getImageUrl(url, function(imageUrl, width, height) {
 

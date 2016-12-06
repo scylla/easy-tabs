@@ -26,14 +26,14 @@ $('ul').on('click', 'li', function() {
     console.log("moving to..................." );
     // chrome.tabs.get($(this).attr('id'));
     chrome.tabs.update(parseInt($(this).attr('id')), {active: true, selected: true, highlighted: true});
-    chrome.tabs.captureVisibleTab(function(dataUrl) {
-      var image = new Image();
-      image.src = dataUrl;
-      image.height = 100;
-      image.width = 100;
-      document.body.appendChild(image);
-      console.log(dataUrl);
-    });
+    // chrome.tabs.captureVisibleTab(function(dataUrl) {
+    //   var image = new Image();
+    //   image.src = dataUrl;
+    //   image.height = 100;
+    //   image.width = 100;
+    //   document.body.appendChild(image);
+    //   console.log(dataUrl);
+    // });
 });
 
 function list(tabs) {
