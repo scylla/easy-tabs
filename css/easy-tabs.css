@@ -1,0 +1,23 @@
+#result {
+    font-size: small;
+}
+
+#result .error {
+    color: red;
+}
+
+#result .success {
+    color: green;
+}
+
+.visit-tab,
+.close-tab {
+    cursor: pointer;
+    cursor: hand;
+}
+
+.data-item {
+		padding: 2px 2px;
+    margin-bottom: -1px;
+}
+
