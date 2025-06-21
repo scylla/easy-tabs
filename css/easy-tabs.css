@@ -1,13 +1,35 @@
+@font-face {
+    font-family: "Roboto";
+    src: url("../fonts/roboto/Roboto-Regular.woff2") format("woff2"),
+         url("../fonts/roboto/Roboto-Regular.woff") format("woff"),
+         url("../fonts/roboto/Roboto-Regular.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: "Roboto";
+    src: url("../fonts/roboto/Roboto-Bold.woff2") format("woff2"),
+         url("../fonts/roboto/Roboto-Bold.woff") format("woff"),
+         url("../fonts/roboto/Roboto-Bold.ttf") format("truetype");
+    font-weight: bold;
+    font-style: normal;
+}
+body {
+    font-family: "Roboto", "Segoe UI", "Lucida Grande", Tahoma, sans-serif;
+    background-color: #f8f9fa;
+    color: #212529;
+}
+
 #result {
     font-size: small;
 }
 
 #result .error {
-    color: red;
+    color: #d9534f;
 }
 
 #result .success {
-    color: green;
+    color: #5cb85c;
 }
 
 .visit-tab,
@@ -38,4 +60,9 @@
 #searchBox {
     margin-bottom: 8px;
 }
+.panel-heading {
+    border: none;
+    border-radius: 4px;
+}
+
 
