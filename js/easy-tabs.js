@@ -4,6 +4,11 @@
 
 var activeTabDomains = {};
 var domainRegex = /:\/\/(.[^/]+)/; // regex to get domains from URL
+
+function extractDomain(url) {
+    var match = url.match(domainRegex);
+    return match ? match[1] : null;
+}
 var numDomains = 0;
 var domainMap = {};
 var inverseDomainMap = {};
@@ -16,17 +21,20 @@ var TabObject = function(tabDomain, tabUrl, tabTitle, tabID) {
     this.tabID = tabID;
 }
 
-// on click visit-tab
-$('#accordion').on('click', 'span.visit-tab', function() {
-    chrome.tabs.update(parseInt($(this).attr('id')), { active: true });
-});
+// register events only when running in a browser environment
+if (typeof window !== 'undefined' && typeof $ !== 'undefined') {
+    // on click visit-tab
+    $('#accordion').on('click', 'span.visit-tab', function() {
+        chrome.tabs.update(parseInt($(this).attr('id')), { active: true });
+    });
 
-// on click close-tab
-$('#accordion').on('click', 'span.close-tab', function() {
-    var tabId = parseInt($(this).attr('id').replace('close-', ''));
-    chrome.tabs.remove([tabId]);
-    $(this).parent().parent().remove();
-});
+    // on click close-tab
+    $('#accordion').on('click', 'span.close-tab', function() {
+        var tabId = parseInt($(this).attr('id').replace('close-', ''));
+        chrome.tabs.remove([tabId]);
+        $(this).parent().parent().remove();
+    });
+}
 
 function addTopList(domainName) {
     $('#accordion').append('<div class="panel panel-default" id="panel-' + domainName + '"><div class="panel-heading" role="tab" id="heading-' + domainName + '"><h4 class="panel-title">' + inverseDomainMap[domainName] + '</h4></div></div>');
@@ -67,7 +75,11 @@ function setDomainList(tabs) {
     // populte tabs list
     for (var i = 0; i < tabs.length; i++) {
         var tabUrl = tabs[i].url;
-        var tabDomain = tabUrl.match(domainRegex)[1];
+        var tabDomain = extractDomain(tabUrl);
+        if (!tabDomain) {
+            // skip tabs like about:blank
+            continue;
+        }
         if (tabDomain in domainMap) {
             tabDomain = domainMap[tabDomain];
         } else {
@@ -88,6 +100,12 @@ function setDomainList(tabs) {
     generateTabsUI();
 }
 
-$(document).ready(function() {
-    chrome.tabs.getAllInWindow(null, setDomainList);
-});
+if (typeof window !== 'undefined' && typeof chrome !== 'undefined') {
+    $(document).ready(function() {
+        chrome.tabs.getAllInWindow(null, setDomainList);
+    });
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = { extractDomain };
+}
