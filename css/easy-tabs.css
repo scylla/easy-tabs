@@ -16,8 +16,8 @@
 }
 body {
     font-family: "Roboto", "Segoe UI", "Lucida Grande", Tahoma, sans-serif;
-    background-color: #f8f9fa;
-    color: #212529;
+    background-color: #343541;
+    color: #ECECF1;
 }
 
 #result {
@@ -55,28 +55,35 @@ body {
     font-size: 12px;
     color: #fff;
     font-weight: bold;
+    background-color: #565869;
 }
 
 #searchBox {
     margin-bottom: 8px;
+    background-color: #40414F;
+    color: #ECECF1;
+    border: 1px solid #666;
 }
 .panel-heading {
     border: none;
     border-radius: 4px;
+    background-color: #565869;
+    color: #ECECF1;
 }
 
 .panel {
     border: none;
     border-radius: 4px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    box-shadow: none;
     margin-bottom: 8px;
-    background-color: #fff;
+    background-color: #444654;
+    color: #ECECF1;
 }
 
 .window-container {
-    background: #fff;
+    background: #202123;
     border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
     padding: 8px;
     margin-bottom: 16px;
 }
@@ -85,8 +92,11 @@ body {
     font-size: 1.2em;
     margin-bottom: 8px;
     font-weight: bold;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #444;
     padding-bottom: 4px;
+    color: #ECECF1;
 }
 
 
+.close-tab { color: #ff5555; }
+.form-control::placeholder { color: #a0a0a0; }
