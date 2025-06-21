@@ -5,6 +5,16 @@
 var activeTabDomains = {};
 var domainRegex = /:\/\/(.[^/]+)/; // regex to get domains from URL
 
+function sanitizeUrlForIcon(url) {
+    if (!url) return url;
+    try {
+        var u = new URL(url);
+        return u.origin === 'null' ? url.split('#')[0] : u.origin;
+    } catch (e) {
+        return url.split('#')[0];
+    }
+}
+
 function colorFromDomain(domain) {
     var hash = 0;
     for (var i = 0; i < domain.length; i++) {
@@ -46,6 +56,14 @@ if (typeof window !== 'undefined' && typeof $ !== 'undefined') {
         var tabId = parseInt($(this).attr('id').replace('close-', ''));
         chrome.tabs.remove([tabId]);
         $(this).parent().parent().remove();
+    });
+
+    $('#searchBox').on('input', function() {
+        var query = $(this).val().toLowerCase();
+        $('#accordion .panel').each(function() {
+            var text = $(this).find('.panel-title').text().toLowerCase();
+            $(this).toggle(text.indexOf(query) !== -1);
+        });
     });
 }
 
@@ -89,7 +107,7 @@ function addSubLists(tabObject) {
 function generateTabsUI() {
     for (var domainName in activeTabDomains) {
         var domainsList = activeTabDomains[domainName];
-        var icon = domainsList[0].tabUrl;
+        var icon = sanitizeUrlForIcon(domainsList[0].tabUrl);
         addTopList(domainName, icon);
         for (var it in domainsList) {
             addSubLists(domainsList[it]);
@@ -134,5 +152,5 @@ if (typeof window !== 'undefined' && typeof chrome !== 'undefined') {
 }
 
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { extractDomain };
+    module.exports = { extractDomain, sanitizeUrlForIcon };
 }

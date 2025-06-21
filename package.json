@@ -3,6 +3,6 @@
   "version": "0.1.0",
   "description": "Easy Tabs Chrome extension",
   "scripts": {
-    "test": "node test/extractDomain.test.js"
+    "test": "node test/extractDomain.test.js && node test/sanitizeUrlForIcon.test.js"
   }
 }
