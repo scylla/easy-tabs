@@ -17,16 +17,22 @@ function sanitizeUrlForIcon(url) {
 }
 
 function colorFromDomain(domain) {
+    var palette = [
+        '#4b0082',
+        '#8a2be2',
+        '#9370db',
+        '#9400d3',
+        '#006400',
+        '#2e8b57',
+        '#3cb371',
+        '#66cdaa'
+    ];
     var hash = 0;
     for (var i = 0; i < domain.length; i++) {
         hash = domain.charCodeAt(i) + ((hash << 5) - hash);
     }
-    var colour = '#';
-    for (var j = 0; j < 3; j++) {
-        var value = (hash >> (j * 8)) & 0xff;
-        colour += ('00' + value.toString(16)).substr(-2);
-    }
-    return colour;
+    var index = Math.abs(hash) % palette.length;
+    return palette[index];
 }
 
 function lightenColor(color, percent) {
