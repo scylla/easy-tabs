@@ -18,12 +18,13 @@ var TabObject = function(tabDomain, tabUrl, tabTitle, tabID) {
 
 // on click visit-tab
 $('#accordion').on('click', 'span.visit-tab', function() {
-    chrome.tabs.update(parseInt($(this).attr('id')), { active: true, selected: true, highlighted: true });
+    chrome.tabs.update(parseInt($(this).attr('id')), { active: true });
 });
 
 // on click close-tab
 $('#accordion').on('click', 'span.close-tab', function() {
-    chrome.tabs.remove([parseInt($(this).attr('id'))]);
+    var tabId = parseInt($(this).attr('id').replace('close-', ''));
+    chrome.tabs.remove([tabId]);
     $(this).parent().parent().remove();
 });
 
@@ -32,7 +33,22 @@ function addTopList(domainName) {
 }
 
 function addSubLists(tabObject) {
-    $('#accordion').find('#panel-' + tabObject.tabDomain).append('<div id="collapse-' + tabObject.tabDomain + '" role="tabpanel" class="data-item" aria-labelledby="heading-' + tabObject.tabDomain + '"><div class="panel-body"><span class="visit-tab" id="' + tabObject.tabID + '">' + tabObject.tabTitle + '</span> &nbsp; <span class="glyphicon glyphicon-remove close-tab" aria-hidden="true" id="' + tabObject.tabID + '"></span></div></div>');
+    var subListID = 'collapse-' + tabObject.tabID;
+    $('#accordion')
+        .find('#panel-' + tabObject.tabDomain)
+        .append(
+            '<div id="' +
+                subListID +
+                '" role="tabpanel" class="data-item" aria-labelledby="heading-' +
+                tabObject.tabDomain +
+                '"><div class="panel-body"><span class="visit-tab" id="' +
+                tabObject.tabID +
+                '">' +
+                tabObject.tabTitle +
+                '</span> &nbsp; <span class="glyphicon glyphicon-remove close-tab" aria-hidden="true" id="close-' +
+                tabObject.tabID +
+                '"></span></div></div>'
+        );
 }
 
 // function generate tabs UI
