@@ -102,7 +102,7 @@ function setDomainList(tabs) {
 
 if (typeof window !== 'undefined' && typeof chrome !== 'undefined') {
     $(document).ready(function() {
-        chrome.tabs.getAllInWindow(null, setDomainList);
+        chrome.tabs.query({}, setDomainList);
     });
 }
 
