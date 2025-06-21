@@ -5,6 +5,19 @@
 var activeTabDomains = {};
 var domainRegex = /:\/\/(.[^/]+)/; // regex to get domains from URL
 
+function colorFromDomain(domain) {
+    var hash = 0;
+    for (var i = 0; i < domain.length; i++) {
+        hash = domain.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    var colour = '#';
+    for (var j = 0; j < 3; j++) {
+        var value = (hash >> (j * 8)) & 0xff;
+        colour += ('00' + value.toString(16)).substr(-2);
+    }
+    return colour;
+}
+
 function extractDomain(url) {
     var match = url.match(domainRegex);
     return match ? match[1] : null;
@@ -36,8 +49,21 @@ if (typeof window !== 'undefined' && typeof $ !== 'undefined') {
     });
 }
 
-function addTopList(domainName) {
-    $('#accordion').append('<div class="panel panel-default" id="panel-' + domainName + '"><div class="panel-heading" role="tab" id="heading-' + domainName + '"><h4 class="panel-title">' + inverseDomainMap[domainName] + '</h4></div></div>');
+function addTopList(domainName, iconUrl) {
+    var color = colorFromDomain(domainName);
+    $('#accordion').append(
+        '<div class="panel panel-default" id="panel-' +
+            domainName +
+            '"><div class="panel-heading" style="background-color:' +
+            color +
+            ';color:#fff;" role="tab" id="heading-' +
+            domainName +
+            '"><h4 class="panel-title"><img class="domain-icon" src="chrome://favicon/' +
+            iconUrl +
+            '"> ' +
+            inverseDomainMap[domainName] +
+            '</h4></div></div>'
+    );
 }
 
 function addSubLists(tabObject) {
@@ -63,7 +89,8 @@ function addSubLists(tabObject) {
 function generateTabsUI() {
     for (var domainName in activeTabDomains) {
         var domainsList = activeTabDomains[domainName];
-        addTopList(domainName);
+        var icon = domainsList[0].tabUrl;
+        addTopList(domainName, icon);
         for (var it in domainsList) {
             addSubLists(domainsList[it]);
         }
