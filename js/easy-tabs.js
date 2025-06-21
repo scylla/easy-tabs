@@ -3,6 +3,7 @@
 */
 
 var activeTabDomains = {};
+var activeWindows = {};
 var domainRegex = /:\/\/(.[^/]+)/; // regex to get domains from URL
 
 function sanitizeUrlForIcon(url) {
@@ -86,12 +87,12 @@ if (typeof window !== 'undefined' && typeof $ !== 'undefined') {
     });
 }
 
-function addTopList(domainName) {
+function addTopList(domainName, container) {
     var color = colorFromDomain(domainName);
     var colorLight = lightenColor(color, 30);
     var firstLetter = inverseDomainMap[domainName].charAt(0).toUpperCase();
     var angle = Math.floor(Math.random() * 360);
-    $('#accordion').append(
+    $(container).append(
         '<div class="panel panel-default" id="panel-' +
             domainName +
             '"><div class="panel-heading" style="background: linear-gradient(' +
@@ -116,9 +117,9 @@ function addTopList(domainName) {
     );
 }
 
-function addSubLists(tabObject) {
+function addSubLists(tabObject, container) {
     var subListID = 'collapse-' + tabObject.tabID;
-    $('#accordion')
+    $(container)
         .find('#panel-' + tabObject.tabDomain)
         .append(
             '<div id="' +
@@ -136,18 +137,18 @@ function addSubLists(tabObject) {
 }
 
 // function generate tabs UI
-function generateTabsUI() {
+function generateTabsUI(container) {
     for (var domainName in activeTabDomains) {
         var domainsList = activeTabDomains[domainName];
-        addTopList(domainName);
+        addTopList(domainName, container);
         for (var it in domainsList) {
-            addSubLists(domainsList[it]);
+            addSubLists(domainsList[it], container);
         }
     }
 }
 
-// set all available domains
-function setDomainList(tabs) {
+// set all available domains within a container
+function setDomainList(tabs, container) {
     // populte tabs list
     for (var i = 0; i < tabs.length; i++) {
         var tabUrl = tabs[i].url;
@@ -173,12 +174,37 @@ function setDomainList(tabs) {
             activeTabDomains[tabDomain].push(new TabObject(tabDomain, tabUrl, tabTitle, tabID));
         }
     }
-    generateTabsUI();
+    generateTabsUI(container);
+}
+
+function addWindowContainer(windowId, index) {
+    $('#accordion').append(
+        '<div class="window-container" id="window-' +
+            windowId +
+            '"><h3 class="window-title">Window ' +
+            index +
+            '</h3><div class="window-domains" id="window-content-' +
+            windowId +
+            '"></div></div>'
+    );
+}
+
+function setWindowList(windows) {
+    for (var i = 0; i < windows.length; i++) {
+        var win = windows[i];
+        addWindowContainer(win.id, i + 1);
+        // reset globals for each window
+        activeTabDomains = {};
+        numDomains = 0;
+        domainMap = {};
+        inverseDomainMap = {};
+        setDomainList(win.tabs, '#window-content-' + win.id);
+    }
 }
 
 if (typeof window !== 'undefined' && typeof chrome !== 'undefined') {
     $(document).ready(function() {
-        chrome.tabs.query({}, setDomainList);
+        chrome.windows.getAll({ populate: true }, setWindowList);
     });
 }
 
