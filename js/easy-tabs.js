@@ -28,6 +28,25 @@ function colorFromDomain(domain) {
     return colour;
 }
 
+function lightenColor(color, percent) {
+    var num = parseInt(color.replace('#', ''), 16);
+    var amt = Math.round(2.55 * percent);
+    var R = (num >> 16) + amt;
+    var G = ((num >> 8) & 0x00ff) + amt;
+    var B = (num & 0x0000ff) + amt;
+    return (
+        '#' +
+        (
+            0x1000000 +
+            (R < 255 ? (R < 0 ? 0 : R) : 255) * 0x10000 +
+            (G < 255 ? (G < 0 ? 0 : G) : 255) * 0x100 +
+            (B < 255 ? (B < 0 ? 0 : B) : 255)
+        )
+            .toString(16)
+            .slice(1)
+    );
+}
+
 function extractDomain(url) {
     var match = url.match(domainRegex);
     return match ? match[1] : null;
@@ -67,18 +86,31 @@ if (typeof window !== 'undefined' && typeof $ !== 'undefined') {
     });
 }
 
-function addTopList(domainName, iconUrl) {
+function addTopList(domainName) {
     var color = colorFromDomain(domainName);
+    var colorLight = lightenColor(color, 30);
+    var firstLetter = inverseDomainMap[domainName].charAt(0).toUpperCase();
+    var angle = Math.floor(Math.random() * 360);
     $('#accordion').append(
         '<div class="panel panel-default" id="panel-' +
             domainName +
-            '"><div class="panel-heading" style="background-color:' +
+            '"><div class="panel-heading" style="background: linear-gradient(' +
+            angle +
+            'deg, ' +
             color +
-            ';color:#fff;" role="tab" id="heading-' +
+            ', ' +
+            colorLight +
+            ');color:#fff;" role="tab" id="heading-' +
             domainName +
-            '"><h4 class="panel-title"><img class="domain-icon" src="chrome://favicon/' +
-            iconUrl +
-            '"> ' +
+            '"><h4 class="panel-title"><span class="domain-icon" style="background: linear-gradient(' +
+            angle +
+            'deg, ' +
+            colorLight +
+            ', ' +
+            color +
+            ');">' +
+            firstLetter +
+            '</span> ' +
             inverseDomainMap[domainName] +
             '</h4></div></div>'
     );
@@ -107,8 +139,7 @@ function addSubLists(tabObject) {
 function generateTabsUI() {
     for (var domainName in activeTabDomains) {
         var domainsList = activeTabDomains[domainName];
-        var icon = sanitizeUrlForIcon(domainsList[0].tabUrl);
-        addTopList(domainName, icon);
+        addTopList(domainName);
         for (var it in domainsList) {
             addSubLists(domainsList[it]);
         }
